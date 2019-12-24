@@ -446,23 +446,22 @@ class Rendition {
 	 * Report resize events and display the last seen location
 	 * @private
 	 */
-	onResized(size, epubcfi){
+	onResized(size){
 
 		/**
 		 * Emit that the rendition has been resized
 		 * @event resized
 		 * @param {number} width
 		 * @param {height} height
-		 * @param {string} epubcfi (optional)
 		 * @memberof Rendition
 		 */
 		this.emit(EVENTS.RENDITION.RESIZED, {
 			width: size.width,
 			height: size.height
-		}, epubcfi);
+		});
 
 		if (this.location && this.location.start) {
-			this.display(epubcfi || this.location.start.cfi);
+			this.display(this.location.start.cfi);
 		}
 
 	}
@@ -494,16 +493,15 @@ class Rendition {
 	 * Trigger a resize of the views
 	 * @param {number} [width]
 	 * @param {number} [height]
-	 * @param {string} [epubcfi] (optional)
 	 */
-	resize(width, height, epubcfi){
+	resize(width, height){
 		if (width) {
 			this.settings.width = width;
 		}
 		if (height) {
 			this.settings.height = height;
 		}
-		this.manager.resize(width, height, epubcfi);
+		this.manager.resize(width, height);
 	}
 
 	/**
@@ -941,11 +939,11 @@ class Rendition {
 
 		let computed = contents.window.getComputedStyle(contents.content, null);
 		let height = (contents.content.offsetHeight - (parseFloat(computed.paddingTop) + parseFloat(computed.paddingBottom))) * .95;
-		let horizontalPadding = parseFloat(computed.paddingLeft) + parseFloat(computed.paddingRight);
+		let verticalPadding = parseFloat(computed.verticalPadding);
 
 		contents.addStylesheetRules({
 			"img" : {
-				"max-width": (this._layout.columnWidth ? (this._layout.columnWidth - horizontalPadding) + "px" : "100%") + "!important",
+				"max-width": (this._layout.columnWidth ? (this._layout.columnWidth - verticalPadding) + "px" : "100%") + "!important",
 				"max-height": height + "px" + "!important",
 				"object-fit": "contain",
 				"page-break-inside": "avoid",
@@ -953,7 +951,7 @@ class Rendition {
 				"box-sizing": "border-box"
 			},
 			"svg" : {
-				"max-width": (this._layout.columnWidth ? (this._layout.columnWidth - horizontalPadding) + "px" : "100%") + "!important",
+				"max-width": (this._layout.columnWidth ? (this._layout.columnWidth - verticalPadding) + "px" : "100%") + "!important",
 				"max-height": height + "px" + "!important",
 				"page-break-inside": "avoid",
 				"break-inside": "avoid"

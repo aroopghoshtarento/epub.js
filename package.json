@@ -1,30 +1,49 @@
 {
-  "name": "epubjs",
-  "version": "0.3.85",
+  "_from": "epubjs@0.3.84",
+  "_id": "epubjs@0.3.84",
+  "_inBundle": false,
+  "_integrity": "sha512-8DKIdoVDs73sa9ZIfSGR0Y9OZhbs341gBVjL5zm785+TYWWU5dOGY/12chZQHsol8VG1kYcZJWhH6VlaDrYUeQ==",
+  "_location": "/epubjs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "epubjs@0.3.84",
+    "name": "epubjs",
+    "escapedName": "epubjs",
+    "rawSpec": "0.3.84",
+    "saveSpec": null,
+    "fetchSpec": "0.3.84"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/epubjs/-/epubjs-0.3.84.tgz",
+  "_shasum": "c7f340df442cb994489c1b292fc4ba94d8861a0f",
+  "_spec": "epubjs@0.3.84",
+  "_where": "/Users/aroop/projects/EbookClient",
+  "author": {
+    "name": "fchasen@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/futurepress/epub.js/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@types/jszip": "^3.1.4",
+    "@types/localforage": "0.0.34",
+    "event-emitter": "^0.3.5",
+    "jszip": "^3.1.5",
+    "localforage": "^1.7.2",
+    "lodash": "^4.17.10",
+    "marks-pane": "^1.0.9",
+    "path-webpack": "0.0.3",
+    "stream-browserify": "^2.0.1",
+    "url-polyfill": "^1.1.3",
+    "xmldom": "^0.1.27"
+  },
+  "deprecated": false,
   "description": "Parse and Render Epubs",
-  "main": "lib/index.js",
-  "module": "src/index.js",
-  "types": "types/index.d.ts",
-  "repository": "https://github.com/futurepress/epub.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers ChromeHeadlessNoSandbox",
-    "documentation": "./node_modules/.bin/gulp docs",
-    "lint": "./node_modules/.bin/eslint -c .eslintrc.js src; exit 0",
-    "start": "./node_modules/.bin/webpack-dev-server --inline --d",
-    "build": "./node_modules/.bin/webpack --progress",
-    "minify": "NODE_ENV=production npm run build",
-    "legacy": "LEGACY=true npm run build",
-    "productionLegacy": "NODE_ENV=production LEGACY=true npm run build",
-    "compile": "./node_modules/.bin/babel --optional runtime -d lib/ src/",
-    "watch": "./node_modules/.bin/babel --watch --optional runtime -d lib/ src/",
-    "serve": "./node_modules/.bin/gulp serve",
-    "prepare": "npm run compile && npm run build && npm run minify && npm run legacy && npm run productionLegacy"
-  },
-  "author": "fchasen@gmail.com",
-  "license": "BSD-2-Clause",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
@@ -75,17 +94,32 @@
     "webpack-dev-middleware": "^1.12.2",
     "webpack-dev-server": "^2.11.2"
   },
-  "dependencies": {
-    "@types/jszip": "^3.1.4",
-    "@types/localforage": "0.0.34",
-    "event-emitter": "^0.3.5",
-    "jszip": "^3.1.5",
-    "localforage": "^1.7.2",
-    "lodash": "^4.17.10",
-    "marks-pane": "^1.0.9",
-    "path-webpack": "0.0.3",
-    "stream-browserify": "^2.0.1",
-    "url-polyfill": "^1.1.3",
-    "xmldom": "^0.1.27"
-  }
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://github.com/futurepress/epub.js#readme",
+  "license": "BSD-2-Clause",
+  "main": "lib/index.js",
+  "module": "src/index.js",
+  "name": "epubjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/futurepress/epub.js.git"
+  },
+  "scripts": {
+    "build": "webpack --progress",
+    "compile": "babel --optional runtime -d lib/ src/",
+    "documentation": "gulp docs",
+    "legacy": "LEGACY=true npm run build",
+    "lint": "eslint -c .eslintrc.js src; exit 0",
+    "minify": "NODE_ENV=production npm run build",
+    "prepare": "npm run compile && npm run build && npm run minify && npm run legacy && npm run productionLegacy",
+    "productionLegacy": "NODE_ENV=production LEGACY=true npm run build",
+    "serve": "gulp serve",
+    "start": "webpack-dev-server --inline --d",
+    "test": "karma start --single-run --browsers ChromeHeadlessNoSandbox",
+    "watch": "babel --watch --optional runtime -d lib/ src/"
+  },
+  "types": "types/index.d.ts",
+  "version": "0.3.84"
 }

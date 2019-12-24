@@ -39,7 +39,7 @@
     var next = document.getElementById("next");
     var prev = document.getElementById("prev");
 
-    book.open(bookData, "binary");
+    book.open(bookData);
 
     rendition = book.renderTo("viewer", {
       width: "100%",
@@ -47,20 +47,6 @@
     });
 
     rendition.display();
-	
-	var keyListener = function(e){
-
-      // Left Key
-      if ((e.keyCode || e.which) == 37) {
-        rendition.prev();
-      }
-
-      // Right Key
-      if ((e.keyCode || e.which) == 39) {
-        rendition.next();
-      }
-
-    };
 
     rendition.on("keyup", keyListener);
     rendition.on("relocated", function(location){
@@ -77,7 +63,19 @@
       e.preventDefault();
     }, false);
 
-    
+    var keyListener = function(e){
+
+      // Left Key
+      if ((e.keyCode || e.which) == 37) {
+        rendition.prev();
+      }
+
+      // Right Key
+      if ((e.keyCode || e.which) == 39) {
+        rendition.next();
+      }
+
+    };
 
 
     document.addEventListener("keyup", keyListener, false);

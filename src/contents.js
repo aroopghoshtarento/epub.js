@@ -261,8 +261,6 @@ class Contents {
 
 		if (value) {
 			content.style.setProperty(property, value, priority ? "important" : "");
-		} else {
-			content.style.removeProperty(property);
 		}
 
 		return this.window.getComputedStyle(content)[property];
@@ -388,6 +386,7 @@ class Contents {
 	 * @private
 	 */
 	listeners() {
+
 		this.imageLoadListeners();
 
 		this.mediaQueryListeners();
@@ -449,7 +448,9 @@ class Contents {
 		var width, height;
 		// Test size again
 		clearTimeout(this.expanding);
-    requestAnimationFrame(this.resizeCheck.bind(this));
+
+		requestAnimationFrame(this.resizeCheck.bind(this));
+		this.expanding = setTimeout(this.resizeListeners.bind(this), 350);
 	}
 
 	/**
@@ -575,24 +576,6 @@ class Contents {
 			let range = new EpubCFI(target).toRange(this.document, ignoreClass);
 
 			if(range) {
-				try {
-					if (!range.endContainer ||
-						(range.startContainer == range.endContainer 
-						&& range.startOffset == range.endOffset)) {
-						// If the end for the range is not set, it results in collapsed becoming
-						// true. This in turn leads to inconsistent behaviour when calling 
-						// getBoundingRect. Wrong bounds lead to the wrong page being displayed.
-						// https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/15684911/
-						let pos = range.startContainer.textContent.indexOf(" ", range.startOffset);
-						if (pos == -1) {
-							pos = range.startContainer.textContent.length;
-						}
-						range.setEnd(range.startContainer, pos);
-					}
-				} catch (e) {
-					console.error("setting end offset to start container length failed", e);
-				}
-
 				if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
 					position = range.startContainer.getBoundingClientRect();
 					targetPos.left = position.left;
@@ -1043,10 +1026,6 @@ class Contents {
 
 		this.css(COLUMN_GAP, gap+"px");
 		this.css(COLUMN_WIDTH, columnWidth+"px");
-
-		// Fix glyph clipping in WebKit
-		// https://github.com/futurepress/epub.js/issues/983
-		this.css("-webkit-line-box-contain", "block glyphs replaced");
 	}
 
 	/**
