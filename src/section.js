@@ -12,7 +12,7 @@ import { replaceBase } from "./utils/replacements";
  * @param {object} hooks hooks for serialize and content
  */
 class Section {
-	constructor(item, hooks){
+	constructor(item, hooks) {
 		this.idref = item.idref;
 		this.linear = item.linear === "yes";
 		this.properties = item.properties;
@@ -43,16 +43,16 @@ class Section {
 	 * @param  {method} [_request] a request method to use for loading
 	 * @return {document} a promise with the xml document
 	 */
-	load(_request){
+	load(_request) {
 		var request = _request || this.request || require("./utils/request");
 		var loading = new defer();
 		var loaded = loading.promise;
 
-		if(this.contents) {
+		if (this.contents) {
 			loading.resolve(this.contents);
 		} else {
 			request(this.url)
-				.then(function(xml){
+				.then(function (xml) {
 					// var directory = new Url(this.url).directory;
 
 					this.document = xml;
@@ -60,10 +60,10 @@ class Section {
 
 					return this.hooks.content.trigger(this.document, this);
 				}.bind(this))
-				.then(function(){
+				.then(function () {
 					loading.resolve(this.contents);
 				}.bind(this))
-				.catch(function(error){
+				.catch(function (error) {
 					loading.reject(error);
 				});
 		}
@@ -75,7 +75,7 @@ class Section {
 	 * Adds a base tag for resolving urls in the section
 	 * @private
 	 */
-	base(){
+	base() {
 		return replaceBase(this.document, this);
 	}
 
@@ -84,13 +84,13 @@ class Section {
 	 * @param  {method} [_request] a request method to use for loading
 	 * @return {string} output a serialized XML Document
 	 */
-	render(_request){
+	render(_request) {
 		var rendering = new defer();
 		var rendered = rendering.promise;
 		this.output; // TODO: better way to return this from hooks?
 
 		this.load(_request).
-			then(function(contents){
+			then(function (contents) {
 				var userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
 				var isIE = userAgent.indexOf('Trident') >= 0;
 				var Serializer;
@@ -103,13 +103,13 @@ class Section {
 				this.output = serializer.serializeToString(contents);
 				return this.output;
 			}.bind(this)).
-			then(function(){
+			then(function () {
 				return this.hooks.serialize.trigger(this.output, this);
 			}.bind(this)).
-			then(function(){
+			then(function () {
 				rendering.resolve(this.output);
 			}.bind(this))
-			.catch(function(error){
+			.catch(function (error) {
 				rendering.reject(error);
 			});
 
@@ -121,52 +121,60 @@ class Section {
 	 * @param  {string} _query The query string to find
 	 * @return {object[]} A list of matches, with form {cfi, excerpt}
 	 */
-	find(_query){
+	find(_query) {
 		var section = this;
 		var matches = [];
 		var query = _query.toLowerCase();
-		var find = function(node){
-			var text = node.textContent.toLowerCase();
-			var range = section.document.createRange();
-			var cfi;
-			var pos;
-			var last = -1;
-			var excerpt;
-			var limit = 150;
+		var ignoreNext = false;
+		var find = function (node) {
+			if (!ignoreNext) {
+				var text = node.textContent.toLowerCase();
+				var range = section.document.createRange();
+				var cfi;
+				var pos;
+				var last = -1;
+				var excerpt;
+				var limit = 150;
 
-			while (pos != -1) {
-				// Search for the query
-				pos = text.indexOf(query, last + 1);
+				while (pos != -1) {
+					// Search for the query
+					pos = text.indexOf(query, last + 1);
 
-				if (pos != -1) {
-					// We found it! Generate a CFI
-					range = section.document.createRange();
-					range.setStart(node, pos);
-					range.setEnd(node, pos + query.length);
+					if (pos != -1) {
+						// We found it! Generate a CFI
+						range = section.document.createRange();
+						range.setStart(node, pos);
+						range.setEnd(node, pos + query.length);
 
-					cfi = section.cfiFromRange(range);
+						cfi = section.cfiFromRange(range);
 
-					// Generate the excerpt
-					if (node.textContent.length < limit) {
-						excerpt = node.textContent;
+						// Generate the excerpt
+						if (node.textContent.length < limit) {
+							excerpt = node.textContent;
+						}
+						else {
+							excerpt = node.textContent.substring(pos - limit / 2, pos + limit / 2);
+							excerpt = "..." + excerpt + "...";
+						}
+
+						// Add the CFI to the matches list
+						matches.push({
+							cfi: cfi,
+							excerpt: excerpt
+						});
 					}
-					else {
-						excerpt = node.textContent.substring(pos - limit/2, pos + limit/2);
-						excerpt = "..." + excerpt + "...";
-					}
 
-					// Add the CFI to the matches list
-					matches.push({
-						cfi: cfi,
-						excerpt: excerpt
-					});
+					last = pos;
 				}
-
-				last = pos;
+			}
+			if (node && node.nextSibling && (node.nextSibling.tagName == 'title' || node.nextSibling.tagName == 'meta')) {
+				ignoreNext = true
+			} else {
+				ignoreNext = false
 			}
 		};
 
-		sprint(section.document, function(node) {
+		sprint(section.document, function (node) {
 			find(node);
 		});
 
@@ -179,23 +187,23 @@ class Section {
 	* @param {object} globalLayout  The global layout settings object, chapter properties string
 	* @return {object} layoutProperties Object with layout properties
 	*/
-	reconcileLayoutSettings(globalLayout){
+	reconcileLayoutSettings(globalLayout) {
 		//-- Get the global defaults
 		var settings = {
-			layout : globalLayout.layout,
-			spread : globalLayout.spread,
-			orientation : globalLayout.orientation
+			layout: globalLayout.layout,
+			spread: globalLayout.spread,
+			orientation: globalLayout.orientation
 		};
 
 		//-- Get the chapter's display type
-		this.properties.forEach(function(prop){
+		this.properties.forEach(function (prop) {
 			var rendition = prop.replace("rendition:", "");
 			var split = rendition.indexOf("-");
 			var property, value;
 
-			if(split != -1){
+			if (split != -1) {
 				property = rendition.slice(0, split);
-				value = rendition.slice(split+1);
+				value = rendition.slice(split + 1);
 
 				settings[property] = value;
 			}
